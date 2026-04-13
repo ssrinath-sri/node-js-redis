@@ -1,0 +1,20 @@
+{
+  "name": "node-js-redis-sample",
+  "version": "1.0.0",
+  "description": "Sample Node.js project showing MongoDB and Redis caching",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "seed": "node src/seed.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "mongodb": "^7.1.1",
+    "redis": "^5.11.0"
+  },
+  "license": "MIT"
+}
