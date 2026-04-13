@@ -7,7 +7,7 @@ This project demonstrates a simple Node.js HTTP server with MongoDB for persiste
 - `src/index.js` - Express HTTP server and startup logic
 - `src/db.js` - MongoDB connection helper
 - `src/cache.js` - Redis connection and cache helper
-- `src/routes/products.js` - `/products` endpoint with Redis cache fallback
+- `src/routes/products.js` - `/products` endpoint with Redis cache fallback and update support
 - `src/seed.js` - simple sample data seeding script
 - `.gitignore` - ignores `node_modules` and `.env`
 
@@ -29,8 +29,18 @@ This project demonstrates a simple Node.js HTTP server with MongoDB for persiste
 ## Requirements
 
 - Node.js 18+ installed
-- MongoDB server running locally or reachable via connection string
+- MongoDB Atlas cluster or MongoDB server reachable from Codespace
 - Redis server running locally or reachable via connection string
+
+## Local Redis in Codespace
+
+If you do not have Redis running yet, start a local Redis container inside the Codespace:
+
+```bash
+docker run -d --name redis-local -p 6379:6379 redis:latest
+```
+
+Then keep `REDIS_URL=redis://127.0.0.1:6379` in your `.env`.
 
 ## Setup
 
@@ -40,14 +50,16 @@ This project demonstrates a simple Node.js HTTP server with MongoDB for persiste
 npm install
 ```
 
-2. Create a `.env` file in the project root:
+2. Create a `.env` file in the project root. You can copy the values from `.env.example` and replace the MongoDB URI with your Atlas connection string.
 
 ```text
-MONGODB_URI=mongodb://127.0.0.1:27017
+MONGODB_URI=mongodb+srv://<username>:<password>@cluster0.example.mongodb.net/redis_node_sample?retryWrites=true&w=majority
 MONGODB_DB=redis_node_sample
 REDIS_URL=redis://127.0.0.1:6379
 PORT=4000
 ```
+
+If you are using Atlas, make sure `MONGODB_DB` is the name of the database you want to use.
 
 3. Seed sample products:
 
@@ -67,7 +79,15 @@ npm start
 http://localhost:4000/products
 ```
 
-6. Force refresh the Redis cache:
+6. Update a product by id:
+
+```bash
+curl -X PUT http://localhost:4000/products/<productId> \
+  -H "Content-Type: application/json" \
+  -d '{"price": 29.99, "inStock": false}'
+```
+
+7. Force refresh the Redis cache:
 
 ```text
 http://localhost:4000/products?forceRefresh=true

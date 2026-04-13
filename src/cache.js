@@ -28,6 +28,13 @@ async function setCache(key, value, ttlSeconds = 60) {
   await redisClient.setEx(key, ttlSeconds, value);
 }
 
+async function deleteCache(key) {
+  if (!redisClient.isOpen) {
+    throw new Error('Redis client is not connected.');
+  }
+  await redisClient.del(key);
+}
+
 async function disconnectRedis() {
   if (redisClient.isOpen) {
     await redisClient.disconnect();
@@ -39,5 +46,6 @@ module.exports = {
   connectRedis,
   getCache,
   setCache,
+  deleteCache,
   disconnectRedis,
 };
